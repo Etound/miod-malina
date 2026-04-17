@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Miód Malina Starachowice – domowe obiady, świeże zupy i kultowy schabowy. Zamów telefonicznie lub odwiedź nas przy ul. Waryńskiego 6.">
+<meta name="robots" content="index, follow">
+<title>Miód Malina Starachowice | Domowe Obiady</title>
+<meta property="og:title" content="Miód Malina Starachowice | Domowe Obiady">
+<meta property="og:description" content="Prawdziwe domowe jedzenie w Starachowicach. Świeże zupy, kultowy schabowy, ceny uczciwe.">
+<meta property="og:type" content="restaurant">
+<meta property="og:locale" content="pl_PL">
+
+<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;%F0%9F%8D%AF&lt;/text&gt;&lt;/svg&gt;">
+
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --honey: #FFB800;
+        --raspberry: #E91E8C;
+        --dark: #0a0a0a;
+        --card-bg: #141414;
+        --text: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background-color: var(--dark); color: var(--text); overflow-x: hidden; }
+
+    .svg-icon { display:inline-block; width:1em; height:1em; vertical-align:middle; fill:currentColor; }
+
+    nav {
+        position: fixed;
+        top: 0; width: 100%; 
+        height: clamp(70px, 15vw, 180px);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 5%; z-index: 1000;
+        background: rgba(0,0,0,0);
+        transition: background 0.4s, box-shadow 0.4s;
+    }
+
+    nav.scrolled, nav.nav-open {
+        background: rgba(10,10,10,0.97);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        max-width: 60%;
+    }        
+
+    .logo-img {
+        display: block;
+        height: clamp(80px, 13vw, 160px);
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease, filter 0.4s ease;
+    }
+
+    .scrolled .logo-img, .nav-open .logo-img {
+        filter: drop-shadow(0px 0px 15px rgba(255, 255, 255, 0.5));
+    }
+
+    .logo-img:hover {
+        transform: scale(1.05);
+    }
+    
+    .nav-links { display: flex; gap: 25px; list-style: none; }
+    .nav-links a { text-decoration: none; color: white; font-size: 14px; font-weight: 400; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--honey); }
+
+    .nav-cta {
+        display: inline-block;
+        border: 1px solid var(--raspberry);
+        padding: 10px 20px;
+        text-decoration: none; color: white;
+        font-size: 13px; font-weight: 700; 
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .nav-cta:hover { 
+        background: var(--raspberry); 
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(233, 30, 140, 0.4);
+    }
+
+    .btn-facebook {
+        border-color: #1877F2;
+        color: #1877F2;
+    }
+
+    .btn-facebook:hover {
+        background: #1877F2;
+        color: white;
+        box-shadow: 0 4px 15px rgba(24, 119, 242, 0.4);
+    }
+
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 5px;
+    }
+
+    .hamburger span {
+        display: block; width: 25px; height: 2px;
+        background: white; transition: 0.3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: clamp(70px, 15vw, 180px);
+        left: 0;
+        right: 0;
+        bottom: 0; /* Menu kończy się idealnie na dole ekranu */
+        background: rgba(10,10,10,0.98);
+        padding: 20px 5% 80px 5%; /* Duży margines na dole, żeby przycisk nie był ucięty */
+        z-index: 999;
+        flex-direction: column;
+        gap: 15px;
+        border-top: 1px solid #222;
+        overflow-y: auto; /* Pozwala przewijać menu, jeśli jest za długie */
+    }
+
+    .mobile-menu.open { display: flex; }
+    
+    .mobile-menu a {
+        text-decoration: none; color: white;
+        font-size: 18px; font-weight: 400;
+        padding: 10px 0;
+        transition: color 0.3s;
+    }
+
+    /* Linia oddzielająca tylko dla linków tekstowych, NIE dla przycisku */
+    .mobile-menu a:not(.nav-cta) {
+        border-bottom: 1px solid #1a1a1a;
+    }
+
+    /* Usuwamy linię spod ostatniego linku przed przyciskiem (Kontakt) */
+    .mobile-menu a:nth-last-child(2) {
+        border-bottom: none;
+    }
+
+    .mobile-menu a:hover { color: var(--honey); }
+
+.hero {
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), 
+                url('./Miód Malina Starachowice _ Domowe Obiady_files/123.jpg') 35% 20% / cover no-repeat;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    padding: 0 5%;
+}
+
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: 4rem; margin-bottom: 20px; line-height: 1.1; }
+    .hero h1 span { color: var(--honey); font-style: italic; }
+    .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 40px; color: #ddd; line-height: 1.6; }
+    
+    section { padding: 100px 5%; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 3rem; text-align: center; margin-bottom: 60px; color: var(--honey); }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1200px; margin: 0 auto; align-items: center; }
+    .about-text p { margin-bottom: 20px; line-height: 1.8; color: #ccc; }
+    .about-img { width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+    .menu-bg { background-color: var(--card-bg); }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
+    .menu-category h3 { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 30px; color: var(--raspberry); border-bottom: 1px solid #333; padding-bottom: 10px; }
+    .menu-item { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px dashed #333; padding-bottom: 10px; }
+    .menu-item-info h4 { font-size: 1.1rem; margin-bottom: 5px; }
+    .menu-item-info p { font-size: 0.9rem; color: #888; }
+    .menu-item-price { font-weight: 700; color: var(--honey); font-size: 1.2rem; }
+
+    .menu-dnia-box {
+        background: linear-gradient(135deg, rgba(233,30,140,0.1), rgba(255,184,0,0.1));
+        border: 1px solid var(--honey);
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+        max-width: 800px;
+        margin: 60px auto 0;
+    }
+
+    .galeria-bg { background-color: var(--dark); }
+    .galeria-grid { 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 20px; 
+        max-width: 1200px; 
+        margin: 0 auto; 
+    }
+
+    .galeria-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        aspect-ratio: 1 / 1;
+    }
+
+    .galeria-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease, filter 0.5s ease;
+        filter: brightness(0.8);
+    }
+
+    .galeria-item:hover img {
+        transform: scale(1.1);
+        filter: brightness(1.1);
+    }
+
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+    .review-card { background: var(--card-bg); padding: 40px 30px; border-radius: 10px; text-align: center; border: 1px solid #222; transition: transform 0.3s;}
+    .review-card:hover { transform: translateY(-5px); border-color: var(--honey); }
+    .review-text { font-style: italic; margin-bottom: 20px; line-height: 1.6; color: #ccc; }
+    .review-author { color: var(--honey); font-weight: bold; margin-bottom: 5px;}
+    .review-stars { color: #FFB800; font-size: 1.2rem;}
+
+    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 50px; max-width: 1200px; margin: 0 auto; text-align: center; }
+    .contact-box i { font-size: 3rem; color: var(--honey); margin-bottom: 20px; }
+    .contact-box h3 { font-size: 1.5rem; margin-bottom: 15px; font-family: 'Playfair Display', serif; }
+    .contact-box p { color: #ccc; line-height: 1.6; }
+    .phone-link { color: var(--honey); text-decoration: none; font-size: 1.5rem; font-weight: bold; transition: color 0.3s;}
+    .phone-link:hover { color: var(--raspberry); }
+
+    footer { background-color: #050505; padding: 40px 5%; text-align: center; border-top: 1px solid #222; }
+    footer p { color: #666; font-size: 0.9rem; }
+    footer a { color: var(--honey); text-decoration: none; }
+
+    @media (max-width: 768px) {
+        .nav-links, .nav-cta.desktop { display: none; }
+        .hamburger { display: flex; }
+        .hero h1 { font-size: 2.5rem; }
+        .about-grid { grid-template-columns: 1fr; text-align: center; }
+        .section-title { font-size: 2.2rem; }
+        .galeria-grid { grid-template-columns: repeat(2, 1fr); } 
+    }
+    @media (max-width: 480px) {
+        .galeria-grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<nav id="navbar">
+    <a href="#" class="logo">
+        <img src="./Miód Malina Starachowice _ Domowe Obiady_files/image-removebg-preview.png" alt="Logo Miód Malina" class="logo-img">
+    </a>
+    
+    <ul class="nav-links">
+        <li><a href="#o-nas">O nas</a></li>
+        <li><a href="#menu">Nasze Menu</a></li>
+        <li><a href="#galeria">Galeria</a></li>
+        <li><a href="#opinie">Opinie</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+
+    <a href="tel:+48661334050" class="nav-cta desktop"><svg class="svg-icon" viewBox="0 0 512 512" style="margin-right:8px;"><path d="M497.39 361.8l-112-48a24 24 0 0 0-28 6.9l-49.6 60.6A370.66 370.66 0 0 1 130.6 204.11l60.6-49.6a23.94 23.94 0 0 0 6.9-28l-48-112A24.16 24.16 0 0 0 122.6.61l-104 24A24 24 0 0 0 0 48c0 256.5 207.9 464 464 464a24 24 0 0 0 23.4-18.6l24-104a24.29 24.29 0 0 0-14.01-27.6z"></path></svg> Zadzwoń i zamów</a>
+    
+    <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#o-nas">O nas</a>
+    <a href="#menu">Nasze Menu</a>
+    <a href="#galeria">Galeria</a>
+    <a href="#opinie">Opinie</a>
+    <a href="#kontakt">Kontakt</a>
+    <a href="tel:+48661334050" class="nav-cta" style="text-align:center; margin-top:10px;">Zadzwoń i zamów</a>
+</div>
+
+<section class="hero">
+    <h1>Prawdziwy smak <br><span>domowych obiadów</span></h1>
+    <p>Kultowy schabowy, świeże zupy i jedzenie, które smakuje jak u babci. Zapraszamy do Miód Maliny w Starachowicach!</p>
+    <div style="display:flex; gap:15px; flex-wrap:wrap; justify-content:center;">
+        <a href="#menu" class="nav-cta" style="font-size:16px; padding:15px 30px;">Zobacz Menu</a>
+        <a href="https://maps.app.goo.gl/rVTcaukteUzucXsw8" target="_blank" rel="noopener noreferrer" class="nav-cta" style="background:var(--honey); border-color:var(--honey); color:#000; font-size:16px; padding:15px 30px;">Prowadź do nas</a>
+    </div>
+</section>
+
+<section id="o-nas">
+    <div class="about-grid">
+        <div class="about-text">
+            <h2 class="section-title" style="text-align: left;">Nasza Filozofia</h2>
+            <p>W Miód Malinie nie idziemy na kompromisy. Gotujemy tak, jak gotowało się w polskich domach od pokoleń – na naturalnych składnikach, świeżych warzywach i dobrym mięsie.</p>
+            <p>Codziennie rano obieramy ziemniaki, lepimy pierogi i rozbijamy schabowe. To nasza pasja i obietnica dla Ciebie – zjesz u nas sycąco, pysznie i w uczciwej cenie.</p>
+            <p>Odwiedź nas przy <strong>ul. Waryńskiego 6</strong> i poczuj się jak w domu.</p>
+        </div>
+        <div>
+            <img src="./Miód Malina Starachowice _ Domowe Obiady_files/619882470_18106883338668829_7837488069198551979_n.jpg" alt="Pyszny domowy obiad w Miód Malina" class="about-img">
+        </div>
+    </div>
+</section>
+
+<section id="menu" class="menu-bg">
+    <div class="menu-dnia-box">
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--honey); margin-bottom: 15px;">Codziennie nowe Menu Dnia!</h3>
+        <p style="margin-bottom: 25px; line-height: 1.6;">Każdego dnia rano przygotowujemy specjalny zestaw obiadowy. Aby być na bieżąco z dzisiejszymi smakami, odwiedź nasz profil na Facebooku.</p>
+        <a href="https://www.facebook.com/miodmalinastarachowice" target="_blank" rel="noopener noreferrer" class="nav-cta btn-facebook" style="font-size:16px;">
+            <svg class="svg-icon" viewBox="0 0 320 512" style="margin-right:8px;"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"></path></svg> 
+            Sprawdź dzisiejsze menu
+        </a>
+    </div>
+</section>
+
+<section id="galeria" class="galeria-bg">
+    <h2 class="section-title">Zobacz nasze smaki</h2>
+    <div class="galeria-grid">
+        <div class="galeria-item"><img src="./Miód Malina Starachowice _ Domowe Obiady_files/623999190_18155077849426204_3478895639976916461_n.jpg" alt="Miód Malina danie" loading="lazy"></div>
+        <div class="galeria-item"><img src="./Miód Malina Starachowice _ Domowe Obiady_files/622764075_18166742665403361_7463372749535086063_n.jpg" alt="Miód Malina danie" loading="lazy"></div>
+        <div class="galeria-item"><img src="./Miód Malina Starachowice _ Domowe Obiady_files/622297029_18131309953508520_4719779721466414555_n.jpg" alt="Miód Malina danie" loading="lazy"></div>
+        <div class="galeria-item"><img src="./Miód Malina Starachowice _ Domowe Obiady_files/619099059_18093449902759214_7589401488674935494_n.jpg" alt="Miód Malina danie" loading="lazy"></div>
+        <div class="galeria-item"><img src="./Miód Malina Starachowice _ Domowe Obiady_files/620802381_18132407692496659_8379618066420500003_n.jpg" alt="Miód Malina danie" loading="lazy"></div>
+        <div class="galeria-item"><img src="./Miód Malina Starachowice _ Domowe Obiady_files/620888465_18136603396495595_923931626216707238_n.jpg" alt="Miód Malina danie" loading="lazy"></div>
+    </div>
+</section>
+
+<section id="opinie">
+    <h2 class="section-title">Co mówią nasi goście</h2>
+    <div class="reviews-grid">
+        <div class="review-card">
+            <p class="review-text">"Prawdziwe domowe jedzenie. Schabowy na cały talerz, zupa jak u babci. Bardzo polecam każdemu, kto lubi zjeść do syta!"</p>
+            <p class="review-author">Kamil S.</p>
+            <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-card">
+            <p class="review-text">"Klimatyczne miejsce i przemiła obsługa, a przede wszystkim przepysznie. Będziemy na pewno wracać częściej."</p>
+            <p class="review-author">Anna W.</p>
+            <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-card">
+            <p class="review-text">"Najlepsze obiady w Starachowicach! Szybko, świeżo i w uczciwej cenie. Zestawy dnia to zawsze strzał w dziesiątkę."</p>
+            <p class="review-author">Michał P.</p>
+            <div class="review-stars">★★★★★</div>
+        </div>
+    </div>
+</section>
+
+<section id="kontakt" class="menu-bg">
+    <h2 class="section-title">Gdzie jesteśmy?</h2>
+    <div class="contact-grid">
+        <div class="contact-box">
+            <div style="margin-bottom: 20px;">
+                <svg class="svg-icon" viewBox="0 0 384 512" style="font-size: 3rem; color: var(--honey);"><path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z"></path></svg>
+            </div>
+            <h3>Lokalizacja</h3>
+            <p>ul. Waryńskiego 6<br>27-200 Starachowice</p>
+            <a href="https://maps.app.goo.gl/rVTcaukteUzucXsw8" target="_blank" rel="noopener noreferrer" class="nav-cta" style="margin-top:15px;">Wyznacz trasę</a>
+        </div>
+        <div class="contact-box">
+            <div style="margin-bottom: 20px;">
+                <svg class="svg-icon" viewBox="0 0 512 512" style="font-size: 3rem; color: var(--honey);"><path d="M497.39 361.8l-112-48a24 24 0 0 0-28 6.9l-49.6 60.6A370.66 370.66 0 0 1 130.6 204.11l60.6-49.6a23.94 23.94 0 0 0 6.9-28l-48-112A24.16 24.16 0 0 0 122.6.61l-104 24A24 24 0 0 0 0 48c0 256.5 207.9 464 464 464a24 24 0 0 0 23.4-18.6l24-104a24.29 24.29 0 0 0-14.01-27.6z"></path></svg>
+            </div>
+            <h3>Zamówienia</h3>
+            <p style="margin-bottom: 10px;">Zadzwoń i zamów z odbiorem lub dowozem:</p>
+            <a href="tel:+48661334050" class="phone-link">661 334 050</a>
+        </div>
+        <div class="contact-box">
+            <div style="margin-bottom: 20px;">
+                <svg class="svg-icon" viewBox="0 0 512 512" style="font-size: 3rem; color: var(--honey);"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg>
+            </div>
+            <h3>Godziny Otwarcia</h3>
+            <p>Poniedziałek - Piątek: 11:00 - 19:00<br>Sobota - Niedziela: 11:00 - 17:00</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Miód Malina Starachowice. Wszystkie prawa zastrzeżone.</p>
+    <p style="margin-top: 10px;">Projekt strony: <a href="#">Oskar Zbrożyna</a></p>
+</footer>
+
+<script>
+    const navbar = document.getElementById('navbar');
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    hamburger.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('open');
+        hamburger.classList.toggle('open', isOpen);
+        navbar.classList.toggle('nav-open', isOpen);
+        hamburger.setAttribute('aria-expanded', isOpen);
+    });
+
+    function closeMobileMenu() {
+        mobileMenu.classList.remove('open');
+        hamburger.classList.remove('open');
+        navbar.classList.remove('nav-open');
+        hamburger.setAttribute('aria-expanded', false);
+    }
+
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!navbar.contains(e.target) && !mobileMenu.contains(e.target)) {
+            closeMobileMenu();
+        }
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if(targetId === "#") return;
+            const target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+</script>
+</body>
+</html>
